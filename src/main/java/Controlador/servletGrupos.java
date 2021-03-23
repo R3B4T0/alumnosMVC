@@ -54,17 +54,16 @@ public class servletGrupos extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String claseSeleccionada="2daw_a";
-       if (request.getParameter("grupo")!=null) {
-        claseSeleccionada = request.getParameter("grupo");
-       }
-       
-       ArrayList<Alumno> alumnos = Utilidades.getAlumnos(rutaFicheros.
-               concat(File.separator).concat(claseSeleccionada.replace(" ", "")).concat(".txt"));
-       request.setAttribute("grupos", grupos);
-       request.setAttribute("clase", claseSeleccionada);
-       request.setAttribute("alumnos", alumnos);
-       request.getRequestDispatcher("/Vista/alumnos.jsp").forward(request,response);
+        String grupoSeleccionado="2daw_a";
+        if(request.getParameter("grupo")!=null){
+            grupoSeleccionado=request.getParameter("grupo");
+        }
+        ArrayList<Alumno> alumnos = Utilidades.getAlumnos(rutaFicheros.
+               concat(File.separator).concat(grupoSeleccionado.replace(" ", "")).concat(".txt"));
+        request.setAttribute("grupos",grupos);
+        request.setAttribute("grupo", grupoSeleccionado);
+        request.setAttribute("alumnos",alumnos);
+        request.getRequestDispatcher("alumnos.jsp").forward(request, response);
     }
 
     /**
@@ -78,27 +77,29 @@ public class servletGrupos extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String claseSeleccionada = request.getParameter("clase").replace(" ", "").concat(".txt");
-        ArrayList<Alumno> alumnos = Utilidades.getAlumnos(rutaFicheros.concat(File.separator).concat(claseSeleccionada.replace(" ","")).concat(".txt"));
-        ArrayList<Alumno> alumnosSelec = new ArrayList<Alumno>();
-        if("2daw_a".equals(claseSeleccionada)){
+        ArrayList<Alumno> alumnosSeleccionados = new ArrayList<Alumno>();
+        String grupoSeleccionado=request.getParameter("grupo");
+        ArrayList<Alumno> alumnos = Utilidades.getAlumnos(rutaFicheros.
+               concat(File.separator).concat(grupoSeleccionado.replace(" ", "")).concat(".txt"));
+        if("2daw_a".equals(grupoSeleccionado)){
             for(Alumno al: alumnos){
-                if(request.getParameter(String.valueOf(al.getId())) != null) {
-                    Alumno alumno = new Alumno(al.getId(), al.getNombre(), al.getApellidos(), al.getEmail());
-                    alumnosSelec.add(alumno);
+                if(request.getParameter(String.valueOf(al.getId()))!=null){
+                    Alumno a = new Alumno(al.getId(),al.getNombre(),al.getApellidos(),al.getEmail());
+                    alumnosSeleccionados.add(a);
                 }
             }
-        } else if("2daw_b".equals(claseSeleccionada)){
+        } else if ("2daw_b".equals(grupoSeleccionado)) {
             for(Alumno al: alumnos){
-                if(request.getParameter(String.valueOf(al.getId())) != null) {
-                    Alumno alumno = new Alumno(al.getId(), al.getNombre(), al.getApellidos(), al.getEmail());
-                    alumnosSelec.add(alumno);
+                if(request.getParameter(String.valueOf(al.getId()))!=null){
+                    Alumno a = new Alumno(al.getId(),al.getNombre(),al.getApellidos(),al.getEmail());
+                    alumnosSeleccionados.add(a);
                 }
             }
         }
-        request.setAttribute("clase", claseSeleccionada);
-        request.setAttribute("alumnosSelec", alumnosSelec);
-        request.getRequestDispatcher("resumen.jsp").forward(request,response);
+      
+        request.setAttribute("grupo", grupoSeleccionado);
+        request.setAttribute("alumnosSeleccionados", alumnosSeleccionados);
+        request.getRequestDispatcher("resumen.jsp").forward(request, response);
     }
 
     /**
